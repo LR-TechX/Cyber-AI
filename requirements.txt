@@ -1,0 +1,7 @@
+kivy==2.3.0
+kivymd==1.2.0
+requests==2.32.3
+schedule==1.2.2
+psutil==5.9.8
+pillow==10.4.0
+numpy==1.26.4

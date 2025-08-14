@@ -1,0 +1,5 @@
+[
+  {"q": "What is MFA?", "a": "Multi-Factor Authentication (MFA) requires two or more verification factors such as a password plus a code or biometric to reduce account takeovers."},
+  {"q": "How to secure Android phone?", "a": "Update OS/apps, enable screen lock and biometric, use Play Store apps only, enable Find My Device, disable unknown sources, and review app permissions."},
+  {"q": "What is phishing?", "a": "Phishing is a social engineering attack where an attacker tricks you into revealing sensitive data or installing malware, often via email or messages."}
+]

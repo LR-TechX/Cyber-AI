@@ -1,0 +1,258 @@
+#:import md_icons kivymd.icon_definitions.md_icons
+
+<CyberMessageBubble@MDCard>:
+    size_hint_y: None
+    height: self.minimum_height
+    padding: dp(12)
+    radius: [12, 12, 12, 12]
+    md_bg_color: (0.09, 0.12, 0.15, 1) if root.sender == 'bot' else (0.05, 0.2, 0.12, 1)
+    elevation: 2
+    orientation: 'vertical'
+    spacing: dp(6)
+    
+    MDLabel:
+        text: root.text
+        theme_text_color: 'Custom'
+        text_color: (0.8, 0.95, 1, 1)
+        markup: True
+        size_hint_y: None
+        height: self.texture_size[1]
+
+<CyberScanProgress@MDCard>:
+    size_hint_y: None
+    height: dp(120)
+    padding: dp(16)
+    radius: [16, 16, 16, 16]
+    md_bg_color: (0.07, 0.09, 0.12, 1)
+    orientation: 'vertical'
+    spacing: dp(10)
+    
+    MDLabel:
+        id: scan_status
+        text: "Idle"
+        theme_text_color: 'Custom'
+        text_color: (0.2, 0.9, 0.6, 1)
+        font_style: 'Subtitle1'
+    MDProgressBar:
+        id: scan_progress
+        value: 0
+        color: (0.1, 0.85, 0.7, 1)
+        height: dp(8)
+
+#:set PRIMARY_BG 0.05,0.06,0.08,1
+#:set ACCENT 0.1,0.9,0.8,1
+
+<CyberGrid@Widget>:
+    canvas:
+        Color:
+            rgba: 0, 1, 0.8, 0.07
+        Line:
+            width: 1
+            rectangle: self.x, self.y, self.width, self.height
+        Color:
+            rgba: 0, 1, 0.8, 0.07
+        # Simple grid lines
+        PushMatrix
+        Translate:
+            x: 0
+            y: 0
+        # Vertical lines
+        Color:
+            rgba: 0, 1, 0.8, 0.07
+        Rectangle:
+            pos: self.pos
+            size: self.size
+        PopMatrix
+
+<CyberAvatar@MDCard>:
+    size_hint: None, None
+    size: dp(64), dp(64)
+    radius: [32, 32, 32, 32]
+    md_bg_color: (0.07, 0.1, 0.14, 1)
+    elevation: 3
+    padding: dp(8)
+    Image:
+        source: 'assets/avatars/avatar.svg'
+        allow_stretch: True
+        keep_ratio: True
+
+<ChatTab@MDScreen>:
+    name: 'chat'
+    
+    MDBoxLayout:
+        orientation: 'vertical'
+        md_bg_color: PRIMARY_BG
+        padding: dp(8)
+        spacing: dp(6)
+        
+        BoxLayout:
+            size_hint_y: None
+            height: dp(68)
+            spacing: dp(8)
+            padding: dp(8), dp(8)
+            
+            CyberAvatar:
+                id: avatar_card
+            MDLabel:
+                text: 'CyberSentinel AI'
+                theme_text_color: 'Custom'
+                text_color: ACCENT
+                font_style: 'H6'
+                valign: 'middle'
+        
+        ScrollView:
+            id: chat_scroll
+            MDList:
+                id: chat_list
+                spacing: dp(8)
+        
+        MDBoxLayout:
+            size_hint_y: None
+            height: dp(58)
+            spacing: dp(8)
+            padding: dp(8)
+            
+            MDTextField:
+                id: chat_input
+                hint_text: 'Ask me anything about cybersecurity...'
+                mode: 'outlined'
+                text_color_normal: 1,1,1,1
+                line_color_focus: ACCENT
+                icon_left: 'shield-lock'
+            MDRaisedButton:
+                id: send_btn
+                text: 'Send'
+                md_bg_color: ACCENT
+                on_release: app.on_send_message()
+
+<ScanTab@MDScreen>:
+    name: 'scan'
+    
+    MDBoxLayout:
+        orientation: 'vertical'
+        md_bg_color: PRIMARY_BG
+        padding: dp(12)
+        spacing: dp(12)
+
+        CyberScanProgress:
+            id: scan_card
+        
+        MDCard:
+            size_hint_y: None
+            height: dp(64)
+            md_bg_color: 0.07,0.09,0.12,1
+            radius: [12,12,12,12]
+            padding: dp(8)
+            MDBoxLayout:
+                spacing: dp(10)
+                MDIconButton:
+                    icon: 'radar'
+                    theme_text_color: 'Custom'
+                    text_color: ACCENT
+                    on_release: app.on_start_scan()
+                MDLabel:
+                    text: 'Start Quick Scan'
+                    theme_text_color: 'Custom'
+                    text_color: 0.9,0.95,1,1
+                    valign: 'middle'
+
+        MDCard:
+            orientation: 'vertical'
+            md_bg_color: 0.07,0.09,0.12,1
+            radius: [12,12,12,12]
+            padding: dp(12)
+            MDLabel:
+                text: 'Recent Scans'
+                theme_text_color: 'Custom'
+                text_color: ACCENT
+            ScrollView:
+                MDList:
+                    id: scan_history_list
+
+<HistoryTab@MDScreen>:
+    name: 'history'
+    
+    MDBoxLayout:
+        orientation: 'vertical'
+        md_bg_color: PRIMARY_BG
+        padding: dp(12)
+        spacing: dp(12)
+
+        MDLabel:
+            text: 'Chat & Scan History'
+            theme_text_color: 'Custom'
+            text_color: ACCENT
+            font_style: 'H6'
+
+        ScrollView:
+            MDList:
+                id: history_list
+
+<SettingsTab@MDScreen>:
+    name: 'settings'
+
+    MDBoxLayout:
+        orientation: 'vertical'
+        md_bg_color: PRIMARY_BG
+        padding: dp(12)
+        spacing: dp(12)
+
+        MDTextField:
+            id: openai_key
+            hint_text: 'OpenAI API Key'
+            mode: 'outlined'
+            password: True
+            text: app.db.get_setting('OPENAI_API_KEY') or '' if app.db else ''
+        
+        MDTextField:
+            id: hf_key
+            hint_text: 'HuggingFace API Key'
+            mode: 'outlined'
+            password: True
+            text: app.db.get_setting('HUGGINGFACE_API_KEY') or '' if app.db else ''
+
+        MDTextField:
+            id: scan_interval
+            hint_text: 'Scan interval minutes (0 to disable, min 5 when enabled)'
+            mode: 'outlined'
+            text: str(app.db.get_setting('SCAN_INTERVAL_MIN', 60)) if app.db else '60'
+        
+        MDRaisedButton:
+            text: 'Save Settings'
+            md_bg_color: ACCENT
+            on_release: app.on_save_settings()
+
+
+<CyberSentinelRoot@MDScreen>:
+    md_bg_color: PRIMARY_BG
+    
+    MDBoxLayout:
+        orientation: 'vertical'
+        md_bg_color: PRIMARY_BG
+
+        MDToolbar:
+            title: 'CyberSentinel AI'
+            left_action_items: [['shield-lock', lambda x: None]]
+            elevation: 8
+
+        MDTabs:
+            id: tabs
+            background_color: PRIMARY_BG
+            text_color_active: ACCENT
+            
+            Tab:
+                title: 'Chat'
+                ChatTab:
+                    id: chat_tab
+            Tab:
+                title: 'Scan'
+                ScanTab:
+                    id: scan_tab
+            Tab:
+                title: 'History'
+                HistoryTab:
+                    id: history_tab
+            Tab:
+                title: 'Settings'
+                SettingsTab:
+                    id: settings_tab
